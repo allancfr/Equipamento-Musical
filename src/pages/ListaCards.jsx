@@ -1,30 +1,11 @@
-import { useState, useEffect } from 'react';
+// 1. Importamos nosso hook customizado
+import useGetInstruments from '../hooks/useGetInstruments.jsx';
 
 function ListaCards() {
-  // A lógica de estado (loading, error, data) é a mesma da tabela
-  const [equipamentos, setEquipamentos] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // 2. Usamos o hook para obter os dados, loading e error em uma única linha!
+  const { equipamentos, loading, error } = useGetInstruments();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('http://localhost:3000/equipamentos');
-        if (!response.ok) {
-          throw new Error('A resposta da rede não foi boa');
-        }
-        const data = await response.json();
-        setEquipamentos(data);
-      } catch (error) {
-        setError(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
+  // O resto do componente continua exatamente o mesmo!
   if (loading) {
     return <p>Carregando...</p>;
   }
@@ -33,7 +14,6 @@ function ListaCards() {
     return <p>Erro ao carregar os dados: {error.message}</p>;
   }
 
-  // A principal diferença está aqui, no JSX retornado
   return (
     <div>
       <h1>Lista de Instrumentos</h1>
@@ -49,7 +29,6 @@ function ListaCards() {
             <p><strong>Peso:</strong> {equip.peso_kg} kg</p>
             <p>
               <strong>Status:</strong>
-              {/* Adicionamos uma classe dinamicamente para colorir o status */}
               <span className={equip.ativo ? 'status-ativo' : 'status-inativo'}>
                 {equip.ativo ? ' Ativo' : ' Inativo'}
               </span>
